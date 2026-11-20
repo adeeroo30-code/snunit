@@ -1,0 +1,16 @@
+# Pings the Supabase database every 3 days so the free project is never paused for inactivity.
+# Calls the public, read-only hardest() function with the publishable key (public by design).
+name: keep-supabase-awake
+on:
+  schedule:
+    - cron: '17 6 */3 * *'
+  workflow_dispatch:
+permissions: {}
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          curl -fsS -X POST "https://hbnzpfhjxocsnukpnbui.supabase.co/rest/v1/rpc/hardest" \
+            -H "apikey: sb_publishable_O1c6F1LduLNrqgt6u5w6qA_MnK65Aay" \
+            -H "Content-Type: application/json" -d '{}' -o /dev/null -w "HTTP %{http_code}\n"
